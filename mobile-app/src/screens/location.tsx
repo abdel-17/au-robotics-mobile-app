@@ -1,13 +1,41 @@
 import {
     LocationAccuracy,
-    LocationSubscription,
     requestForegroundPermissionsAsync,
     watchPositionAsync,
     type LocationObject,
+    type LocationSubscription,
 } from "expo-location";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
+import { useWebSocket } from "../components/WebSocketProvider";
+
+export function LocationScreen() {
+    const ws = useWebSocket();
+    const location = useLocationState();
+
+    useEffect(() => {
+        return () => {
+            ws.current?.close();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (
+            ws.current?.readyState === WebSocket.OPEN &&
+            location.status === "granted"
+        ) {
+            ws.current.send(JSON.stringify(location.coordinates));
+        }
+    }, [location]);
+
+    return (
+        <View className="flex-1 items-center justify-center bg-white">
+            <StatusBar style="auto" />
+            <LocationView location={location} />
+        </View>
+    );
+}
 
 type LocationState =
     | {
@@ -63,17 +91,7 @@ function useLocationState() {
     return location;
 }
 
-export default function App() {
-    const location = useLocationState();
-    return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <StatusBar style="auto" />
-            <Location location={location} />
-        </View>
-    );
-}
-
-function Location({ location }: { location: LocationState }) {
+function LocationView({ location }: { location: LocationState }) {
     switch (location.status) {
         case "pending":
             return <ActivityIndicator size="large" />;
