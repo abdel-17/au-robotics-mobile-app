@@ -25,7 +25,8 @@ export function LocationScreen() {
             ws.current?.readyState === WebSocket.OPEN &&
             location.status === "granted"
         ) {
-            ws.current.send(JSON.stringify(location.coordinates));
+            const { latitude, longitude } = location.coordinates;
+            ws.current.send(JSON.stringify({ latitude, longitude }));
         }
     }, [location]);
 
