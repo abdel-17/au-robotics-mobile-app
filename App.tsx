@@ -3,12 +3,11 @@ import {
     createNativeStackNavigator,
     type NativeStackScreenProps,
 } from "@react-navigation/native-stack";
-import { RootSiblingParent } from "react-native-root-siblings";
-import { HomeScreen } from "./src/screens/home";
+import { ConnectScreen } from "./src/screens/connect";
 import { LocationScreen } from "./src/screens/location";
 
 type StackParamList = {
-    Home: undefined;
+    Connect: undefined;
     Location: undefined;
 };
 
@@ -19,13 +18,11 @@ const Stack = createNativeStackNavigator<StackParamList>();
 
 export default function App() {
     return (
-        <RootSiblingParent>
-            <NavigationContainer>
-                <Stack.Navigator initialRouteName="Home">
-                    <Stack.Screen name="Home" component={HomeScreen} />
-                    <Stack.Screen name="Location" component={LocationScreen} />
-                </Stack.Navigator>
-            </NavigationContainer>
-        </RootSiblingParent>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Connect">
+                <Stack.Screen name="Connect" component={ConnectScreen} />
+                <Stack.Screen name="Location" component={LocationScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }

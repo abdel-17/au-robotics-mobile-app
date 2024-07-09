@@ -1,23 +1,37 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import Toast from "react-native-root-toast";
+import {
+    Button,
+    StyleSheet,
+    Text,
+    TextInput,
+    ToastAndroid,
+    View,
+} from "react-native";
 import * as ws from "../utils/ws";
 import type { ScreenProps } from "../../App";
 
-export function HomeScreen({ navigation }: ScreenProps<"Home">) {
+const ipPattern = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+const portPattern = /^\d{1,5}$/;
+
+export function ConnectScreen({ navigation }: ScreenProps<"Connect">) {
     const [ip, setIp] = useState("");
     const [port, setPort] = useState("");
     const [connecting, setConnecting] = useState(false);
 
     async function connect() {
+        if (!ipPattern.test(ip) || !portPattern.test(port)) {
+            ToastAndroid.show("Invalid port or IP address", ToastAndroid.LONG);
+            return;
+        }
+
         try {
             setConnecting(true);
             await ws.connect(`ws://${ip}:${port}`);
             navigation.navigate("Location");
         } catch (error) {
             console.error("Failed to connect:", error);
-            Toast.show("Failed to connect to server");
+            ToastAndroid.show("Failed to connect", ToastAndroid.LONG);
         } finally {
             setConnecting(false);
         }
@@ -43,11 +57,13 @@ export function HomeScreen({ navigation }: ScreenProps<"Home">) {
                     style={styles.input}
                 />
             </View>
-            <Button
-                title={connecting ? "Connecting" : "Connect"}
-                disabled={connecting}
-                onPress={connect}
-            />
+            <View style={styles.buttonContainer}>
+                <Button
+                    title={connecting ? "Connecting" : "Connect"}
+                    disabled={connecting}
+                    onPress={connect}
+                />
+            </View>
         </View>
     );
 }
@@ -60,7 +76,6 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     label: {
-        fontSize: 16,
         fontWeight: "500",
         marginBottom: 4,
     },
@@ -68,11 +83,12 @@ const styles = StyleSheet.create({
         borderColor: "gray",
         borderRadius: 8,
         borderWidth: 1,
-        fontSize: 16,
         padding: 12,
     },
     portContainer: {
-        paddingBottom: 24,
         paddingTop: 16,
+    },
+    buttonContainer: {
+        paddingTop: 32,
     },
 });

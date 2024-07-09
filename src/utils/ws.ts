@@ -12,9 +12,13 @@ export function connect(url: string) {
             reject(event);
         }
 
-        connection = new WebSocket(url);
-        connection.addEventListener("open", onOpen, { once: true });
-        connection.addEventListener("error", onError, { once: true });
+        try {
+            connection = new WebSocket(url);
+            connection.addEventListener("open", onOpen, { once: true });
+            connection.addEventListener("error", onError, { once: true });
+        } catch (error) {
+            reject(error);
+        }
     });
 }
 
