@@ -8,27 +8,25 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { useWebSocket } from "../components/WebSocketProvider";
+import * as ws from "../utils/ws";
 
 export function LocationScreen() {
-    const ws = useWebSocket();
     const location = useLocationState();
 
     useEffect(() => {
-        return () => {
-            ws.current?.close();
-        };
-    }, []);
+        if (location.status !== "granted") {
+            return;
+        }
+
+        const { latitude, longitude } = location.coordinates;
+        ws.send(JSON.stringify({ latitude, longitude }));
+    }, [location]);
 
     useEffect(() => {
-        if (
-            ws.current?.readyState === WebSocket.OPEN &&
-            location.status === "granted"
-        ) {
-            const { latitude, longitude } = location.coordinates;
-            ws.current.send(JSON.stringify({ latitude, longitude }));
-        }
-    }, [location]);
+        return () => {
+            ws.close();
+        };
+    }, []);
 
     return (
         <View style={styles.container}>

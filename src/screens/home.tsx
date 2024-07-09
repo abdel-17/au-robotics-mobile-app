@@ -1,15 +1,11 @@
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import Toast from "react-native-root-toast";
-import type { RootStackParamList } from "../../App";
-import { useWebSocket } from "../components/WebSocketProvider";
+import * as ws from "../utils/ws";
+import type { ScreenProps } from "../../App";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Home">;
-
-export function HomeScreen({ navigation }: Props) {
-    const ws = useWebSocket();
+export function HomeScreen({ navigation }: ScreenProps<"Home">) {
     const [ip, setIp] = useState("");
     const [port, setPort] = useState("");
     const [connecting, setConnecting] = useState(false);
@@ -17,7 +13,7 @@ export function HomeScreen({ navigation }: Props) {
     async function connect() {
         try {
             setConnecting(true);
-            ws.current = await websocket(`ws://${ip}:${port}`);
+            await ws.connect(`ws://${ip}:${port}`);
             navigation.navigate("Location");
         } catch (error) {
             console.error("Failed to connect:", error);
@@ -80,22 +76,3 @@ const styles = StyleSheet.create({
         paddingTop: 16,
     },
 });
-
-async function websocket(url: string) {
-    return new Promise<WebSocket>((resolve, reject) => {
-        const ws = new WebSocket(url);
-
-        function onOpen() {
-            resolve(ws);
-            ws.removeEventListener("error", onError);
-        }
-
-        function onError(event: Event) {
-            reject(event);
-            ws.removeEventListener("open", onOpen);
-        }
-
-        ws.addEventListener("open", onOpen, { once: true });
-        ws.addEventListener("error", onError, { once: true });
-    });
-}

@@ -1,31 +1,31 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+    createNativeStackNavigator,
+    type NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { RootSiblingParent } from "react-native-root-siblings";
-import { WebSocketProvider } from "./src/components/WebSocketProvider";
 import { HomeScreen } from "./src/screens/home";
 import { LocationScreen } from "./src/screens/location";
 
-export type RootStackParamList = {
+type StackParamList = {
     Home: undefined;
     Location: undefined;
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+export type ScreenProps<TScreen extends keyof StackParamList> =
+    NativeStackScreenProps<StackParamList, TScreen>;
+
+const Stack = createNativeStackNavigator<StackParamList>();
 
 export default function App() {
     return (
-        <WebSocketProvider>
-            <RootSiblingParent>
-                <NavigationContainer>
-                    <Stack.Navigator initialRouteName="Home">
-                        <Stack.Screen name="Home" component={HomeScreen} />
-                        <Stack.Screen
-                            name="Location"
-                            component={LocationScreen}
-                        />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </RootSiblingParent>
-        </WebSocketProvider>
+        <RootSiblingParent>
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="Home">
+                    <Stack.Screen name="Home" component={HomeScreen} />
+                    <Stack.Screen name="Location" component={LocationScreen} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </RootSiblingParent>
     );
 }

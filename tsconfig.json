@@ -3,7 +3,8 @@
     "compilerOptions": {
         "allowJs": true,
         "checkJs": true,
-        "strict": true
+        "strict": true,
+        "verbatimModuleSyntax": true
     },
     "exclude": ["babel.config.js"]
 }
