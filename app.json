@@ -1,7 +1,7 @@
 {
     "expo": {
         "name": "AU Robotics",
-        "slug": "au-robotics-mobile-app",
+        "slug": "au-robotics",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
@@ -28,11 +28,6 @@
         "web": {
             "favicon": "./assets/favicon.png"
         },
-        "plugins": [["expo-location"]],
-        "extra": {
-            "eas": {
-                "projectId": "45ef8331-f796-47ad-8698-a791b08bb6d8"
-            }
-        }
+        "plugins": ["expo-location"]
     }
 }
