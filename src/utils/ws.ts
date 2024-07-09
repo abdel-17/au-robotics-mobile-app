@@ -22,12 +22,12 @@ export function connect(url: string) {
     });
 }
 
-export function send(data: string) {
+export function send(data: unknown) {
     if (connection === null || connection.readyState !== WebSocket.OPEN) {
         throw new Error("Connection is not open");
     }
 
-    connection.send(data);
+    connection.send(JSON.stringify(data));
 }
 
 export function close() {
