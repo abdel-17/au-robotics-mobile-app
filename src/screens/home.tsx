@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import Toast from "react-native-root-toast";
 import type { RootStackParamList } from "../../App";
 import { useWebSocket } from "../components/WebSocketProvider";
@@ -28,35 +28,58 @@ export function HomeScreen({ navigation }: Props) {
     }
 
     return (
-        <View className="flex-1 justify-center bg-white p-4">
+        <View style={styles.container}>
             <StatusBar style="auto" />
             <View>
-                <Text className="font-medium text-base mb-1">IP Address</Text>
+                <Text style={styles.label}>IP Address</Text>
                 <TextInput
                     value={ip}
                     onChangeText={setIp}
-                    className="p-3 text-base border border-gray-300 rounded"
+                    style={styles.input}
                 />
             </View>
-            <View className="pt-4">
-                <Text className="font-medium text-base mb-1">Port</Text>
+            <View style={styles.portContainer}>
+                <Text style={styles.label}>Port</Text>
                 <TextInput
                     value={port}
                     onChangeText={setPort}
                     keyboardType="numeric"
-                    className="p-3 text-base border border-gray-300 rounded"
+                    style={styles.input}
                 />
             </View>
-            <View className="pt-6">
-                <Button
-                    title={connecting ? "Connecting" : "Connect"}
-                    disabled={connecting}
-                    onPress={connect}
-                />
-            </View>
+            <Button
+                title={connecting ? "Connecting" : "Connect"}
+                disabled={connecting}
+                onPress={connect}
+            />
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: "white",
+        flex: 1,
+        justifyContent: "center",
+        padding: 16,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: "500",
+        marginBottom: 4,
+    },
+    input: {
+        borderColor: "gray",
+        borderRadius: 8,
+        borderWidth: 1,
+        fontSize: 16,
+        padding: 12,
+    },
+    portContainer: {
+        paddingBottom: 24,
+        paddingTop: 16,
+    },
+});
 
 async function websocket(url: string) {
     return new Promise<WebSocket>((resolve, reject) => {

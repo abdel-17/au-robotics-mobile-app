@@ -7,7 +7,7 @@ import {
 } from "expo-location";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { useWebSocket } from "../components/WebSocketProvider";
 
 export function LocationScreen() {
@@ -31,7 +31,7 @@ export function LocationScreen() {
     }, [location]);
 
     return (
-        <View className="flex-1 items-center justify-center bg-white">
+        <View style={styles.container}>
             <StatusBar style="auto" />
             <LocationView location={location} />
         </View>
@@ -107,3 +107,12 @@ function LocationView({ location }: { location: LocationState }) {
             );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        alignItems: "center",
+        backgroundColor: "white",
+        flex: 1,
+        justifyContent: "center",
+    },
+});

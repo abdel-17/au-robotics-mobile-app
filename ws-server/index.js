@@ -3,7 +3,7 @@ import * as v from "valibot";
 import { WebSocketServer } from "ws";
 
 const host = process.env.HOST || "localhost";
-const port = process.env.PORT || 8080;
+const port = Number(process.env.PORT || 8080);
 const wss = new WebSocketServer({ host, port });
 
 wss.on("listening", () => {
