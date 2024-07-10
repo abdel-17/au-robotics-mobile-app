@@ -20,8 +20,13 @@ export function ConnectScreen({ navigation }: ScreenProps<"Connect">) {
     const [connecting, setConnecting] = useState(false);
 
     async function connect() {
-        if (!ipPattern.test(ip) || !portPattern.test(port)) {
-            ToastAndroid.show("Invalid port or IP address", ToastAndroid.LONG);
+        if (!ipPattern.test(ip)) {
+            ToastAndroid.show("Invalid IP address", ToastAndroid.LONG);
+            return;
+        }
+
+        if (!portPattern.test(port)) {
+            ToastAndroid.show("Invalid port", ToastAndroid.LONG);
             return;
         }
 
