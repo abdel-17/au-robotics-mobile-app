@@ -6,6 +6,11 @@ const host = process.env.HOST || "localhost";
 const port = Number(process.env.PORT || 8080);
 const wss = new WebSocketServer({ host, port });
 
+const CoordinatesSchema = v.object({
+    latitude: v.number(),
+    longitude: v.number(),
+});
+
 wss.on("listening", () => {
     console.log(`Server is listening on ${host}:${port}`);
 });
@@ -20,12 +25,13 @@ wss.on("connection", (ws) => {
             return;
         }
 
-        const location = decodeLocation(data);
-        if (!location.success) {
+        const text = new TextDecoder().decode(data);
+        const coordinates = v.safeParse(CoordinatesSchema, JSON.parse(text));
+        if (!coordinates.success) {
             return;
         }
 
-        const { latitude, longitude } = location.output;
+        const { latitude, longitude } = coordinates.output;
         console.log("Location: (%s %s)", latitude, longitude);
     });
 
@@ -33,15 +39,3 @@ wss.on("connection", (ws) => {
         console.log("Client disconnected");
     });
 });
-
-const LocationSchema = v.object({
-    latitude: v.number(),
-    longitude: v.number(),
-});
-
-/** @param {ArrayBuffer} data */
-function decodeLocation(data) {
-    const text = new TextDecoder().decode(data);
-    const json = JSON.parse(text);
-    return v.safeParse(LocationSchema, json);
-}
