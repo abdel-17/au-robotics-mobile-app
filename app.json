@@ -28,6 +28,16 @@
         "web": {
             "favicon": "./assets/favicon.png"
         },
-        "plugins": ["expo-location"]
+        "plugins": [
+            "expo-location",
+            [
+                "expo-build-properties",
+                {
+                    "android": {
+                        "usesCleartextTraffic": true
+                    }
+                }
+            ]
+        ]
     }
 }
